@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 from .product.views import router as product_router
-from .suppllier.views import router as suppllier_router
-from .categorie.views import router as categorie
-from .payment_methods.views import router as payment_method
+from .supplier.views import router as supplier_router
+from .category.views import router as category_router
+from .payment_methods.views import router as payment_method_router
 
 router = APIRouter()
 
-router.include_router(product_router, prefix='/product')
+router.include_router(product_router, prefix='/product',tags=['product'])
 
-router.include_router(suppllier_router, prefix='/suppllier')
+router.include_router(supplier_router, prefix='/supplier',tags=["supplier"])
 
-router.include_router(categorie, prefix='/categorie')
+router.include_router(category_router, prefix='/category',tags=['category'])
 
-router.include_router(payment_method, prefix='/payment_method')
+router.include_router(payment_method_router, prefix='/payment_method',tags=['payment_method'])
