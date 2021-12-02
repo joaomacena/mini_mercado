@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class Payment_methodSchema(BaseModel):
     name :str
-    enabled:int
+    enabled:bool
 
 class ShowPayment_methodSchema(Payment_methodSchema):
     id:int

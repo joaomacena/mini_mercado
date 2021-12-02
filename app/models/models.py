@@ -20,11 +20,11 @@ class Category(Base):
 
 
 class Payment_method(Base):
-    __tablename__ = 'Payment_methods'
+    __tablename__ = 'payment_methods'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(45))
-    enableb= Column(Boolean , default=True)
+    enabled= Column(Boolean , default=True)
 
 
 class Product(Base):
@@ -40,3 +40,13 @@ class Product(Base):
     category = relationship(Category)
     supplier_id = Column(Integer,ForeignKey('suppliers.id'))
     supplier = relationship(Supplier)
+    
+
+class Product_discount(Base):
+    __tablename__ = 'product_discounts'
+
+    id = Column(Integer,primary_key=True)
+    mode = Column(String(45))
+    value = Column(Float())
+    product_id = Column(Integer,ForeignKey('products.id'))
+    payment_method_id = Column(Integer,ForeignKey('payment_methods.id'))
