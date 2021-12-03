@@ -5,23 +5,14 @@ from .schemas import Product_discountSchema,ShowProduct_discountSchema
 from sqlalchemy.orm import Session
 from app.db.db import get_db
 
-from app.api.payment_methods import views
-from fastapi.exceptions import HTTPException
 
+from app.services.product_discount_service import ProducDiscountService
 
 router = APIRouter()
 
 @router.post('/',status_code= status.HTTP_201_CREATED)
-def create(product_discount:Product_discountSchema,db:Session = Depends(get_db)):
-    payment_method = views.show(product_discount.payment_method_id,db)
-    if payment_method.enabled :
-        db.add(Product_discount(**product_discount.dict()))
-        db.commit()
-    else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f'{payment_method.name} esta desativado e nao pode criar desconto')
-
-    
+def create(product_discount:Product_discountSchema, services: ProducDiscountService = Depends()):
+    services.create_discount(product_discount)
 
 
 @router.get('/',response_model=List[ShowProduct_discountSchema])
