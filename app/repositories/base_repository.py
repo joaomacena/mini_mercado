@@ -23,3 +23,12 @@ class BaseRepository:
 
     def get_by_id(self,id:int):
         return self.session.query(self.model).filter_by(id=id).first()
+
+
+    def filter(self,attributes:dict):
+        self.session.query(self.model).filter_by(**attributes).all()
+    
+
+    def remove(self, id):
+        self.session.query(self.model).filter_by(id=id).delete()
+        self.session.commit()

@@ -1,7 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.sql.sqltypes import Boolean, Integer, String, Float, SmallInteger 
+from sqlalchemy.sql.sqltypes import Boolean, Date, Integer, String, Float, DateTime
 from app.db.db import Base
 
 
@@ -50,3 +50,42 @@ class Product_discount(Base):
     value = Column(Float())
     product_id = Column(Integer,ForeignKey('products.id'))
     payment_method_id = Column(Integer,ForeignKey('payment_methods.id'))
+
+
+class Coupon(Base):
+    __tablename__ = 'coupons'
+
+    id = Column(Integer,primary_key=True)
+    code = Column(String(10),unique=True)
+    expire_at = Column(DateTime)
+    limit = Column(Integer)
+    type = Column(String(15))
+    value = Column(Float())
+
+
+class Customer(Base):
+    __tablename__='Customers'
+
+    id = Column(Integer,primary_key=True)
+    fist_name = Column(String(45))
+    last_name = Column(String(45))
+    phone_number = Column(String(15))
+    genre = Column(String(45))
+    document_id = Column(String(45),unique=True)
+    birth_date = Column(Date)
+    #user id
+
+
+class Address(Base):
+    __tablename__='Addresses'
+
+    id = Column(Integer,primary_key=True)
+    Address = Column(String(255))
+    city = Column(String(45))
+    state = Column(String(2))
+    number = Column(String(10))
+    zipcode = Column(String(6))
+    neighbourhood = Column(String(45))
+    primary = Column(Boolean , default=True)
+    customer_id = Column(Integer,ForeignKey('Customers.id'))
+    customer = relationship(Customer)
