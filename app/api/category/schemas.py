@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class CategorySchema(BaseModel):
-    name:str
+    name: str
+
 
 class ShowCategorySchemas(CategorySchema):
     id: int

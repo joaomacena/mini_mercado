@@ -5,18 +5,21 @@ from app.api.address.schemas import AddressSchema
 from fastapi.exceptions import HTTPException
 from app.common.exceptions import CouponCodeAlreadyExistsException
 
+
 class AddressService:
-    def __init__(self, addressRepository:AddressRepository=Depends()):
+    def __init__(self, addressRepository: AddressRepository = Depends()):
         self.addressRepository = addressRepository
 
-    def is_primary(self,customer_id):
-       return self.addressRepository.get_by_product_id_and_pyment_method_id()
-
-    def create_address(self,address:AddressSchema):
-        old_address = self.addressRepository.get_by_product_id_and_pyment_method_id(address.customer_id, address.primary)
-        print(old_address)
-        if address.primary == True and old_address:
-            print(123)
-            self.addressRepository.update(old_address.id,{'primary':False})
-        self.addressRepository.create(Address(**address.dict()))    
+    def switch_to_false_address(self, address):
+        old_address = self.addressRepository.is_primary(
+            address.customer_id, address.primary)
             
+        if address.primary and old_address:
+            self.addressRepository.update(old_address.id, {'primary': False})
+
+    def create_address(self, address: AddressSchema):
+        self.switch_to_false_address(address)
+        self.addressRepository.create(Address(**address.dict()))
+
+    def update_addres(self, address: AddressSchema):
+        self.switch_to_false_address(address)

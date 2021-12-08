@@ -2,11 +2,11 @@ from pydantic import BaseModel
 
 
 class SupplierSchema(BaseModel):
-    name : str
+    name: str
 
 
 class ShowSupplierSchemas(SupplierSchema):
-    id : int
+    id: int
 
     class Config:
         orm_mode = True
