@@ -19,6 +19,7 @@ def create(user: Admin_UserSchemas, services: Admin_userService = Depends()):
     except Admin_userAlereadyExistsEmailException as msg:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg.message)
 
+
 @router.get("/", response_model=List[ShowAdmin_UserSchemas])
 def index(repository: UserRepository = Depends()):
     return repository.get_all()

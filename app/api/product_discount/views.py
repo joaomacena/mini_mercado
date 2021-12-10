@@ -33,4 +33,4 @@ def update(
 
 @router.get("/{id}", response_model=ShowProduct_discountSchema)
 def show(id: int, repository: Product_discountRepository = Depends()):
-    return repository.get_by_id(id)
+    return repository.get_by_id

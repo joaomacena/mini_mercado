@@ -65,6 +65,7 @@ class Coupon(Base):
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True)
     display_name = Column(String(100))
     email = Column(String(50))
@@ -99,3 +100,41 @@ class Address(Base):
     primary = Column(Boolean, default=True)
     customer_id = Column(Integer, ForeignKey("customers.id"))
     customer = relationship(Customer)
+
+
+class Order(Base):
+    __tablename__= "orders"
+
+    id = Column(Integer, primary_key=True)
+    number = Column(String(10))
+    status =  Column(String(15))
+    customer_id = Column(Integer, ForeignKey("customers.id"))
+    customer = relationship(Customer)
+    created_at = Column(DateTime)
+    address_id = Column(Integer, ForeignKey("addresses.id"))
+    address = relationship(Address)
+    value = Column(Float(10,2))# valor total
+    payment_form_id = Column(Integer, ForeignKey("payment_methods.id")) # payment_method_id
+    payment_form = relationship(Payment_method)
+    total_discount = Column(Float(10,2))# valor total desconto 
+
+
+class Ordem_status(Base):
+    __tablename__ = "ordem_statuses"
+
+    id = Column(Integer, primary_key=True)
+    status =  Column(String(15))
+    created_at = Column(DateTime)
+    order_id = Column(Integer, ForeignKey("orders.id"))
+    order = relationship(Order)
+
+
+class OrderProducts(Base):
+    __tablename__ = 'order_products'
+
+    id = Column(Integer, primary_key=True)
+    order_id = Column(Integer, ForeignKey('orders.id'))
+    order = relationship(Order)
+    product_id = Column(Integer, ForeignKey('products.id'))
+    product = relationship(Product)
+    quantity = Column(Integer)
