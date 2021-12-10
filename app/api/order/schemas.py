@@ -5,8 +5,9 @@ from app.api.product.schemas import ShowProductSchemas
 
 
 class OrderProducts_sum_Schema(BaseModel): 
-    product_id = ShowProductSchemas
+    product_id:int
     quantity:int
+
 
 class OrderSchema(BaseModel):
     number :str
@@ -20,6 +21,20 @@ class OrderSchema(BaseModel):
     payment_form_id: int
     total_discount:float#
 
+
+class creat_OrderProductSchema(BaseModel):
+    order_id:int   
+    product_id:int
+    quantity:int
+
+
+class creat_OrderSchema(BaseModel):
+    customer_id:int
+    address_id:int
+    payment_form_id:int
+    list_products:list[OrderProducts_sum_Schema]
+
+
 class OrderStatus(str, Enum):
     ORDER_CANCELLED = 'order_cancelled'
     ORDER_COMPLETED = 'order_completed'
@@ -27,6 +42,7 @@ class OrderStatus(str, Enum):
     ORDER_PLACED = 'order_placed'
     ORDER_PAID = 'order_paid'
     ORDER_SHIPPED = 'order_shipped'
+
 
 class OrderStatusSchema:
     def __init__(self,order_id: int, status:OrderStatus, created_at: datetime):
