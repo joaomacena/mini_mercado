@@ -65,21 +65,20 @@ class OrderService:
         list(lambda x:
         self.orderProducts_Repository.create(OrderProducts(**creat_OrderProductSchema(
             id_order, x.product_id, x.quantity).dict())),list_products)
-        
+    
 
     def creat_order(self, input_order_schema: OrderSchema):
-        #order_schema = OrderSchema()
         input_order_schema.number = self.order_number() #gerao numero da ordem
         input_order_schema.status = OrderStatus.ORDER_PLACED
         #order_schema.status = OrderStatus.ORDER_PLACED criar modelo
         input_order_schema.created_at = datetime.now()
         input_order_schema.payment_form_id #verificar
-        input_order_schema.customer_id = self.get_customer_id(user.id)
+        input_order_schema.customer_id = user.id
         # order_schema.address_id = input_order_schema.address_id
-        input_order_schema.value = self.get_products_value(input_order_schema.products) #valor total
-        input_order_schema.total_discount = self.get_discount_value(input_order_schema.coupon_code, order_schema.total_value)
-        #self.validate_address(order_schema.customer_id, order_schema.address_id) varificar outro lugar
-        #self.order_repository.create(Order(**order_schema.dict())) criar
+        input_order_schema.value = self.generate_total_value(input_order_schema.products) #valor total
+        input_order_schema.total_discount = self.generate_total_desconto(input_order_schema.number, input_order_schema.payment_form_id)
+        #self.validate_address(order_schema.customer_id, order_schema.address_id) #varificar outro lugar
+        self.orderRepository.create(Order(**input_order_schema.dict())) 
         id_order = self.order_repository.get_by_number(input_order_schema.number).id
         self.init_status_order(id_order) #iniciar ORDER_PLACED
         self.create_order_products(id_order,input_order_schema.list_products)

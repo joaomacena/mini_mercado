@@ -10,6 +10,9 @@ class AddressService:
     def __init__(self, addressRepository: AddressRepository = Depends()):
         self.addressRepository = addressRepository
 
+    def validate_address(self):
+        pass
+
     def switch_to_false_address(self, address):
         old_address = self.addressRepository.is_primary(
             address.customer_id, address.primary)

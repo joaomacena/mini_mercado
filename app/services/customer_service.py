@@ -15,7 +15,16 @@ class CustomerService :
         self.admin_userService = admin_userService
     
     
+
+
     def create_customer(self,customer:CustomerSchema):
+        self.admin_userService.create_admin_user(customer.user_id)
+        user_create = self.userRepository.find_by_email(customer.user_id.email)
+        customer.user_id = user_create.id
+        self.customerRepository.create(Customer(**customer.dict()))
+    
+
+    def update_customer(self,id,customer:CustomerSchema): #finalizar
         self.admin_userService.create_admin_user(customer.user_id)
         user_create = self.userRepository.find_by_email(customer.user_id.email)
         customer.user_id = user_create.id
