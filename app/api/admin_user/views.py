@@ -12,10 +12,10 @@ from fastapi.exceptions import HTTPException
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ShowAdmin_UserSchemas)
 def create(user: Admin_UserSchemas, services: Admin_userService = Depends()):
     try:
-        services.create_admin_user(user)
+        return services.create_admin_user(user)
     except Admin_userAlereadyExistsEmailException as msg:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg.message)
 
@@ -25,10 +25,10 @@ def index(repository: UserRepository = Depends()):
     return repository.get_all()
 
 
-@router.put("/{id}")
+@router.put("/{id}", status_code=status.HTTP_200_OK, response_model=ShowAdmin_UserSchemas)
 def update(id: int, user: Admin_UserSchemas, services: Admin_userService = Depends()):
     try:
-        services.update_admin_user(id, user)
+        return services.update_admin_user(id, user)
     except Admin_userAlereadyExistsEmailException as msg:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg.message)
 

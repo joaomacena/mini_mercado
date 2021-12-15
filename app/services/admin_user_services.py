@@ -12,6 +12,8 @@ class Admin_userService:
 
     def is_valid_email(self,id,email):
         same_email = self.userRepository.get_by_id(id)
+        if same_email and same_email.email == email:
+            return True
         if not self.userRepository.find_by_email(email):
             return True
         raise Admin_userAlereadyExistsEmailException()
@@ -24,7 +26,7 @@ class Admin_userService:
     def create_admin_user(self,admin_user:Admin_UserSchemas):
         if self.is_valid_email(None,admin_user.email):
             admin_user.password = self.generate_password(admin_user.password)
-            self.userRepository.create(User(**admin_user.dict()))
+            return self.userRepository.create(User(**admin_user.dict()))
             
             
     

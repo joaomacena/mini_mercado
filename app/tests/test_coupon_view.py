@@ -38,7 +38,7 @@ def test_coupon_create_two_code_error(client:TestClient, admin_auth_header):
                             })
     print(response)
     assert response.status_code == 400
-    assert response
+
 
 def test_coupon_update(client:TestClient, admin_auth_header):
     response = client.post('/coupon/',
