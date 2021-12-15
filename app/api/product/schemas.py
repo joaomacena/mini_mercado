@@ -6,7 +6,7 @@ from app.api.supplier.schemas import ShowSupplierSchemas
 class ProductSchema(BaseModel):
     description: str
     price: float
-    technnical_details: str
+    technical_details: str
     image: str
     visible: bool
     category_id: int
@@ -15,8 +15,8 @@ class ProductSchema(BaseModel):
 
 class ShowProductSchemas(ProductSchema):
     id: int
-    category: ShowCategorySchemas
-    supplier: ShowSupplierSchemas
+    #category: ShowCategorySchemas
+    #supplier: ShowSupplierSchemas
 
     class Config:
         orm_mode = True

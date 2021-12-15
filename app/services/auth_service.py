@@ -8,7 +8,7 @@ from app.repositories.user_repository import UserRepository
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-JWT_SECRET = "SSGFHDHFGDYU43253"
+JWT_SECRET = "SKDFHSDFHIWYE34345SDFHS230472083hskjdhfk"
 ALGORITHM = "HS256"
 
 

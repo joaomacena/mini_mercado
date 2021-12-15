@@ -11,9 +11,9 @@ from app.services.auth_service import only_admin
 router = APIRouter(dependencies=[Depends(only_admin)])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ShowCategorySchemas)
 def create(category: CategorySchema, repository: CategoryRepository = Depends()):
-    repository.create(Category(**category.dict()))
+    return repository.create(Category(**category.dict()))
 
 
 @router.get(
@@ -23,11 +23,11 @@ def index(repository: CategoryRepository = Depends()):
     return repository.get_all()
 
 
-@router.put("/{id}")
+@router.put("/{id}", status_code=status.HTTP_200_OK,response_model=ShowCategorySchemas)
 def update(
     id: int, category: CategorySchema, repository: CategoryRepository = Depends()
 ):
-    repository.update(id, category.dict())
+    return repository.update(id, category.dict())
 
 
 @router.get("/{id}", response_model=ShowCategorySchemas)

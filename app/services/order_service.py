@@ -8,7 +8,7 @@ from datetime import datetime
 #from fastapi.exceptions import HTTPException
 #from app.common.exceptions import CouponCodeAlreadyExistsException
 import random
-result = random.sample(range(0,100), 4)
+
 
 class OrderService:
     def __init__(self, orderRepository: OrderRepository = Depends(),
@@ -53,7 +53,7 @@ class OrderService:
 
     def generate_total_value(self, order_id):
         listProducts_in_order:OrderProducts_sum_Schema = self.get_listProductsOrder(order_id)
-        return print (sum(list(map(lambda x:x.quantity*
+        return print (sum(list(map(lambda x:x.quantity* 
         self.productRepository.get_by_id(x.product_id).price,listProducts_in_order))))
 
 
@@ -67,19 +67,20 @@ class OrderService:
             id_order, x.product_id, x.quantity).dict())),list_products)
     
 
-    def creat_order(self, input_order_schema: OrderSchema):
-        input_order_schema.number = self.order_number() #gerao numero da ordem
-        input_order_schema.status = OrderStatus.ORDER_PLACED
+    def creat_order(self, input_order_schema: OrderSchema, user):
+        order_schema = OrderSchema()
+        order_schema.number = self.order_number() #gerao numero da ordem
+        order_schema.status = OrderStatus.ORDER_PLACED
         #order_schema.status = OrderStatus.ORDER_PLACED criar modelo
-        input_order_schema.created_at = datetime.now()
-        input_order_schema.payment_form_id #verificar
-        input_order_schema.customer_id = user.id
+        order_schema.created_at = datetime.now()
+        order_schema.payment_form_id =input_order_schema.payment_form_id #verificar
+        order_schema.customer_id = user.id
         # order_schema.address_id = input_order_schema.address_id
-        input_order_schema.value = self.generate_total_value(input_order_schema.products) #valor total
-        input_order_schema.total_discount = self.generate_total_desconto(input_order_schema.number, input_order_schema.payment_form_id)
+        order_schema.value = self.generate_total_value(id_order) #valor total
+        order_schema.total_discount = self.generate_total_desconto(input_order_schema.number, input_order_schema.payment_form_id)
         #self.validate_address(order_schema.customer_id, order_schema.address_id) #varificar outro lugar
-        self.orderRepository.create(Order(**input_order_schema.dict())) 
-        id_order = self.order_repository.get_by_number(input_order_schema.number).id
+        self.orderRepository.create(Order(**order_schema.dict())) 
+        id_order = self.order_repository.get_by_number(order_schema.number).id
         self.init_status_order(id_order) #iniciar ORDER_PLACED
         self.create_order_products(id_order,input_order_schema.list_products)
     

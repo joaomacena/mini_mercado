@@ -13,10 +13,10 @@ from app.services.auth_service import only_admin
 router = APIRouter(dependencies=[Depends(only_admin)])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED,response_model=ShowCouponSchema)
 def create(coupon: CouponSchema, service: CouponService = Depends()):
     try:
-        service.create_coupon(Coupon(**coupon.dict()))
+        return service.create_coupon(coupon)
     except CouponCodeAlreadyExistsException as msg:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=msg.message)
 
@@ -28,7 +28,7 @@ def index(repository: CouponRepository = Depends()):
 
 @router.put("/{id}")
 def update(id: int, category: UpdateCoupon, repository: CouponRepository = Depends()):
-    repository.update(id, category.dict())
+    return repository.update(id, category.dict())
 
 
 @router.get("/{id}", response_model=ShowCouponSchema)

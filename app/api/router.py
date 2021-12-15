@@ -15,11 +15,11 @@ from .order.views import router as order_router
 
 router = APIRouter()
 
-router.include_router(product_router, prefix="/product", tags=["product"])
+router.include_router(product_router, prefix="/products", tags=["product"])
 
 router.include_router(supplier_router, prefix="/supplier", tags=["supplier"])
 
-router.include_router(category_router, prefix="/category", tags=["category"])
+router.include_router(category_router, prefix="/categories", tags=["category"])
 
 router.include_router(
     payment_method_router, prefix="/payment_method",

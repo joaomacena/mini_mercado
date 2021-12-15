@@ -10,8 +10,10 @@ class CouponService:
     def __init__(self, couponRepository: CouponRepository = Depends()):
         self.couponRepository = couponRepository
 
+
     def is_exists_code(self, code):
         return self.couponRepository.filter({"code": code})
+
 
     def expiration_date(self,date):
         if date > datetime.now():
@@ -33,9 +35,8 @@ class CouponService:
                 return self.discount_mode(coupon.type,coupon.value,value_total_order)
 
 
-
-    def create_coupon(self, coupon: ShowCouponSchema):
-        if self.is_exists_code(coupon.code):
-            self.couponRepository.create(Coupon(**coupon.dict()))
+    def create_coupon(self, coupon:CouponSchema):
+        if not self.is_exists_code(coupon.code):
+            return self.couponRepository.create(Coupon(**coupon.dict()))
         else:
             raise CouponCodeAlreadyExistsException()

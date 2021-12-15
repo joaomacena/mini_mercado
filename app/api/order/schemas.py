@@ -10,16 +10,16 @@ class OrderProducts_sum_Schema(BaseModel):
 
 
 class OrderSchema(BaseModel):
-    number :str
-    status ='ORDER PLACED'
+    number :str = None
+    status ='ORDER PLACED' 
     #customer_id = Column(Integer, ForeignKey("customers.id"))
-    customer_id:int
-    created_at:datetime
+    customer_id:int = None
+    created_at:datetime = None
     #address_id = Column(Integer, ForeignKey("addresses.id"))
-    address_id:int
-    value:float# valor total
-    payment_form_id: int
-    total_discount:float#
+    address_id:int = None
+    value:float = None# valor total 
+    payment_form_id: int = None
+    total_discount:float = None#
 
 
 class creat_OrderProductSchema(BaseModel):
