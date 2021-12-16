@@ -21,6 +21,7 @@ class UpdateCustomerSchema(BaseModel):
     birth_date: date
     user_id: UserSchemas_customer
 
+
 class ShowCustomerSchemas(BaseModel):
     id: int
     fist_name: str
@@ -29,7 +30,7 @@ class ShowCustomerSchemas(BaseModel):
     genre: str
     document_id: str
     birth_date: date
-    user_id: ShowUserSchemas
+    user: ShowUserSchemas
 
     class Config:
         orm_mode = True

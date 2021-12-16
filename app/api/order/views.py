@@ -7,8 +7,8 @@ from app.services.order_service import OrderService
 router = APIRouter(dependencies=[Depends(only_admin)])
 
 @router.post('/')
-def create(input_order_schema: creat_OrderSchema, service: OrderService = Depends(), user:get_user= Depends()):
-    service.creat_order(input_order_schema,user)
+def create(input_order_schema: creat_OrderSchema, service: OrderService = Depends()):
+    return service.creat_order(input_order_schema)
 
 @router.put('/{id}')
 def update(id: int, order_status: OrderStatus, service: OrderService = Depends()):

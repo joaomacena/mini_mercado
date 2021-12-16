@@ -5,6 +5,14 @@ from app.common.exceptions import Admin_userAlereadyExistsEmailException
 from app.models.models import User
 import bcrypt
 
+class User_dto():
+    def __init__(self,display_name,email,password,role):
+        self.display_name = display_name
+        self.email = email
+        self.password = password
+        self.role = role
+    
+
 
 class Admin_userService:
     def __init__(self,userRepository:UserRepository = Depends()):

@@ -9,7 +9,7 @@ from .schemas import ShowCustomerSchemas, CustomerSchema, UpdateCustomerSchema
 router = APIRouter()
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED , response_model= ShowCustomerSchemas)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model= ShowCustomerSchemas)
 def create(customer: CustomerSchema, service: CustomerService = Depends()):
     return service.create_customer(customer)
 
@@ -19,11 +19,10 @@ def index(repository: CustomerRepository = Depends()):
     return repository.get_all()
 
 
-@router.put("/{id}")
-def update(
-    id: int, customer: UpdateCustomerSchema, service: CustomerRepository = Depends()
-):
-    service.update(id, customer.dict())
+@router.put("/{id}", status_code=status.HTTP_200_OK, response_model= ShowCustomerSchemas)
+def update(id: int, customer: UpdateCustomerSchema,
+            service: CustomerRepository = Depends()):
+    return service.update(id, customer.dict())
 
 
 @router.get("/{id}", response_model=ShowCustomerSchemas)

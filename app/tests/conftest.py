@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.db import get_db
-from app.models.models import Base, Category, Supplier, User ,Payment_method,Product,Product_discount, Address
+from app.models.models import Base, Category, Supplier, User ,Payment_method,Product,Product_discount, Address,Customer
 from app.app import app
 import pytest
 import factory
@@ -127,23 +127,43 @@ def product_discount_factory(db_session,product_factory,payment_method_factory):
 
 
 @pytest.fixture()
-def address_factory(db_session,user_factory):
-    class Address_discount_Factory(factory.alchemy.SQLAlchemyModelFactory):
+def customer_factory(db_session,user_factory):
+    class Customer_Factory(factory.alchemy.SQLAlchemyModelFactory):
         class Meta:
-            model = Address
+            model = Customer
             sqlalchemy_session = db_session
 
         id = factory.Faker('pyint')
-        Address = factory.Faker('word')
-        city = factory.Faker('city')
-        state = factory.Faker('country_code')
-        number = factory.Faker('building_number')
-        zipcode = factory.Faker('postcode')
-        neighbourhood = factory.Faker('current_country')
-        primary = True
-        customer = factory.SubFactory(user_factory(id= factory.Faker('pyint'),role='customer'))
+        fist_name = factory.Faker('first_name')
+        last_name = factory.Faker('last_name')
+        phone_number = factory.Faker('phone_number')
+        genre = factory.Faker('word')
+        document_id = factory.Faker('pyint')
+        birth_date = factory.Faker('date_between_dates')
+        user = factory.SubFactory(user_factory(role='customer'))
         
-    return Address_discount_Factory
+        
+    return Customer_Factory
+
+
+# @pytest.fixture()
+# def address_factory(db_session,user_factory):
+#     class Address_discount_Factory(factory.alchemy.SQLAlchemyModelFactory):
+#         class Meta:
+#             model = Address
+#             sqlalchemy_session = db_session
+
+#         id = factory.Faker('pyint')
+#         Address = factory.Faker('word')
+#         city = factory.Faker('city')
+#         state = factory.Faker('country_code')
+#         number = factory.Faker('building_number')
+#         zipcode = factory.Faker('postcode')
+#         neighbourhood = factory.Faker('current_country')
+#         primary = True
+#         #customer = )
+        
+#     return Address_discount_Factory
 
 
 @pytest.fixture()
