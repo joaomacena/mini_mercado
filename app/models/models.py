@@ -124,7 +124,7 @@ class Order(Base):
 class Ordem_status(Base):
     __tablename__ = "ordem_statuses"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     status =  Column(String(15))
     created_at = Column(DateTime)
     order_id = Column(Integer, ForeignKey("orders.id"))
@@ -134,7 +134,7 @@ class Ordem_status(Base):
 class OrderProducts(Base):
     __tablename__ = 'order_products'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     order_id = Column(Integer, ForeignKey('orders.id'))
     order = relationship(Order)
     product_id = Column(Integer, ForeignKey('products.id'))

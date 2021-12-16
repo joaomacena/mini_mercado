@@ -40,9 +40,11 @@ class ProducDiscountService:
 
     
     def get_productDiscounts(self, products_by_order:OrderProducts_sum_Schema, pyment_method_id):
-        list_discounts = list(map(lambda x:(self.product_discountRepository.get_by_product_id_and_pyment_method_id(x.product_id,pyment_method_id)),products_by_order))
+        list_discounts = list(map(lambda x:
+            (self.product_discountRepository.get_by_product_id_and_pyment_method_id
+            (x.product_id,pyment_method_id)),products_by_order))
         if list_discounts:
-            return print(list(map(lambda x,y:x.quantity*(self.discount_mode(y.mode,y.value)),products_by_order,list_discounts)))
+            return sum(list(map(lambda x,y:x.quantity*(self.discount_mode(y.mode,y.value)),products_by_order,list_discounts)))
         return 0 
         
 

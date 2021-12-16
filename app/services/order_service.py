@@ -9,7 +9,8 @@ from datetime import datetime
 #from app.common.exceptions import CouponCodeAlreadyExistsException
 import random
 class OrderSchema_Dto:
-    def __init__(self,number,status,customer_id,created_at,address_id,value,payment_form_id,total_discount):
+    def __init__(self,number,status,customer_id,created_at,address_id,
+                    value,payment_form_id,total_discount):
         self.number = number
         self.status = status
         self.customer_id = customer_id
@@ -32,12 +33,15 @@ class OrderService:
         self.producDiscountService = producDiscountService
     
     def order_number(self):
-        n_order = 9999
+        n_order =  '9999'
         return n_order
 
     
-    def criar_status(self, id_order , current_status:OrderStatus):
-        self.ordem_status_Repository.create(**OrderStatusSchema(id_order,current_status,datetime.now()).dict())
+    def criar_status(self, order_id , current_status:OrderStatus):
+        orderStatus = OrderStatusSchema(order_id = order_id,
+                                        status= current_status,
+                                        created_at= datetime.now())
+        self.ordem_status_Repository.create(Ordem_status(**orderStatus.__dict__))
 
 
     def update(self, id:int, order_status:OrderStatus):
@@ -66,31 +70,31 @@ class OrderService:
         return self.producDiscountService.get_productDiscounts(list_products,payment_form_id)
 
 
-    def create_order_products(self, id_order,list_products:list[OrderProducts_sum_Schema]):
-        return list(lambda x:
-        self.orderProducts_Repository.create(OrderProducts(**creat_OrderProductSchema(
-            id_order, x.product_id, x.quantity).dict())),list_products)
-    
+    def create_order_products(self, id,list_products:list[OrderProducts_sum_Schema]):
+        return list(map(lambda x:
+                     self.orderProducts_Repository.create(OrderProducts
+                        (**creat_OrderProductSchema(
+                            order_id = id,
+                            product_id =x.product_id,
+                            quantity =x.quantity
+                        ).dict())),list_products))
+                    
 
     def creat_order(self, input_order_schema: creat_OrderSchema):
-        
-        number = self.order_number() #gerao numero da ordem
-        status = OrderStatus.ORDER_PLACED
-        #order_schema.status = OrderStatus.ORDER_PLACED criar modelo
-        #order_schema.created_at = datetime.now()
-        #order_schema.payment_form_id = input_order_schema.payment_form_id #verificar
-        #order_schema.customer_id = 3
-        # order_schema.address_id = input_order_schema.address_id
-        value = self.generate_total_value(input_order_schema.list_products) #valor total
-        total_discount = self.generate_total_desconto(input_order_schema.list_products,
-        input_order_schema.payment_form_id)
-        #self.validate_address(order_schema.customer_id, order_schema.address_id) #varificar outro lugar
-        order_schema = OrderSchema_Dto(number,status,3,datetime.now(),
-            input_order_schema.address_id,value,input_order_schema.payment_form_id,total_discount)
-        self.orderRepository.create(Order(**order_schema.__dict__)) 
-        # id_order = self.order_repository.get_by_number(order_schema.number).id
-        # self.init_status_order(id_order) #iniciar ORDER_PLACED
-        # self.create_order_products(id_order,input_order_schema.list_products)
+        order_schema = OrderSchema_Dto(
+                number = self.order_number(),
+                status = OrderStatus.ORDER_PLACED,
+                customer_id = 3,
+                created_at = datetime.now(),
+                address_id = input_order_schema.address_id,
+                value = self.generate_total_value(input_order_schema.list_products),
+                payment_form_id = input_order_schema.payment_form_id,
+                total_discount = self.generate_total_desconto(input_order_schema.list_products,
+                                        input_order_schema.payment_form_id)
+        )
+        order = self.orderRepository.create(Order(**order_schema.__dict__)) 
+        self.criar_status(order.id,OrderStatus.ORDER_PLACED) 
+        self.create_order_products(order.id,input_order_schema.list_products)
     
 
     
