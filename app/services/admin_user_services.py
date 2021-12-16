@@ -28,8 +28,6 @@ class Admin_userService:
             admin_user.password = self.generate_password(admin_user.password)
             return self.userRepository.create(User(**admin_user.dict()))
             
-            
-    
 
     def update_admin_user(self,id,admin_user:Admin_UserSchemas):
         if self.is_valid_email(id,admin_user.email):

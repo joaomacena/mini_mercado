@@ -3,8 +3,8 @@ from app.models.models import Product_discount
 from app.repositories.payment_method_repository import Payment_methodRepository
 from app.repositories.product_discount_repository import Product_discountRepository
 from app.api.product_discount.schemas import Product_discountSchema
-from fastapi.exceptions import HTTPException
 from app.api.order.schemas import OrderProducts_sum_Schema
+from app.common.exceptions import PaymentMethodDiscountAlreadyExistsException,PaymentMethodsNotAvailableException
 
 
 class ProducDiscountService:
@@ -14,7 +14,7 @@ class ProducDiscountService:
         self.payment_methodRepository = payment_methodRepository
         self.product_discountRepository = product_discountRepository
 
-    def is_enabled(self, discount):
+    def is_enabled(self,id, discount):
         payment_method = self.payment_methodRepository.get_by_id(
             discount.payment_method_id
         )
@@ -25,18 +25,13 @@ class ProducDiscountService:
         )
 
         if payment_method.enabled:
-            if not productDiscount:
+            if not productDiscount or productDiscount.id == id:
                 return True
             else:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"o pagemeto ja esta resitrado para este produto ",
-                )
+                raise PaymentMethodDiscountAlreadyExistsException()
         else:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"{payment_method.name} esta desativado e nao pode criar desconto",
-            )
+            raise PaymentMethodsNotAvailableException()
+        
 
     def discount_mode(self,mode,value):
         if mode=="percentage":
@@ -52,9 +47,9 @@ class ProducDiscountService:
         
 
     def create_discount(self, discount: Product_discountSchema):
-        if self.is_enabled(discount):
-            self.product_discountRepository.create(Product_discount(**discount.dict()))
+        if self.is_enabled(None,discount):
+            return self.product_discountRepository.create(Product_discount(**discount.dict()))
 
     def update_discount(self, id: int, discount: Product_discountSchema):
-        if self.is_enabled(discount):
-            self.product_discountRepository.update(id, discount.dict())
+        if self.is_enabled(id,discount):
+            return self.product_discountRepository.update(id, discount.dict())

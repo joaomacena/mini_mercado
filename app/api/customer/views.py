@@ -9,9 +9,9 @@ from .schemas import ShowCustomerSchemas, CustomerSchema, UpdateCustomerSchema
 router = APIRouter()
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED , response_model= ShowCustomerSchemas)
 def create(customer: CustomerSchema, service: CustomerService = Depends()):
-    service.create_customer(customer)
+    return service.create_customer(customer)
 
 
 @router.get("/", response_model=List[ShowCustomerSchemas])

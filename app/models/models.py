@@ -49,7 +49,9 @@ class Product_discount(Base):
     mode = Column(String(45))
     value = Column(Float())
     product_id = Column(Integer, ForeignKey("products.id"))
+    product = relationship(Product)
     payment_method_id = Column(Integer, ForeignKey("payment_methods.id"))
+    payment_method = relationship(Payment_method)
 
 
 class Coupon(Base):

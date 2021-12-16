@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.db import get_db
-from app.models.models import Base, Category, Supplier, User
+from app.models.models import Base, Category, Supplier, User ,Payment_method,Product,Product_discount, Address
 from app.app import app
 import pytest
 import factory
@@ -15,8 +15,9 @@ def db_session():
     Session = sessionmaker(bind=engine)
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-
-    yield Session()
+    db = Session()
+    yield db
+    db.close()
 
 
 @pytest.fixture()
@@ -46,6 +47,7 @@ def user_factory(db_session):
         email = factory.Faker('email')
         role = None
         password = '$2b$12$2F.MmED.HUKwVq74djSzguVYu4HBYEkKYNqxRnc/.gVG24QyYcC9m'
+    
 
     return UserFactory
 
@@ -77,6 +79,74 @@ def supplier_factory(db_session):
 
 
 @pytest.fixture()
+def payment_method_factory(db_session):
+    class Payment_methodFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Payment_method
+            sqlalchemy_session = db_session
+
+        id = factory.Faker('pyint')
+        name = factory.Faker('name')
+        enabled = True
+
+    return Payment_methodFactory
+
+
+@pytest.fixture()
+def product_factory(db_session,supplier_factory,category_factory):
+    class ProductFactory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Product
+            sqlalchemy_session = db_session
+
+        id = factory.Faker('pyint')
+        description = factory.Faker('word')
+        price = factory.Faker('pyint')
+        technical_details = factory.Faker('word')
+        visible = True
+        category = factory.SubFactory(category_factory)
+        supplier = factory.SubFactory(supplier_factory)
+
+    return ProductFactory
+
+
+@pytest.fixture()
+def product_discount_factory(db_session,product_factory,payment_method_factory):
+    class Product_discount_Factory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Product_discount
+            sqlalchemy_session = db_session
+
+        id = factory.Faker('pyint')
+        mode = 'value'
+        product = factory.SubFactory(product_factory)
+        payment_method = factory.SubFactory(payment_method_factory)
+        
+        
+    return Product_discount_Factory
+
+
+@pytest.fixture()
+def address_factory(db_session,user_factory):
+    class Address_discount_Factory(factory.alchemy.SQLAlchemyModelFactory):
+        class Meta:
+            model = Address
+            sqlalchemy_session = db_session
+
+        id = factory.Faker('pyint')
+        Address = factory.Faker('word')
+        city = factory.Faker('city')
+        state = factory.Faker('country_code')
+        number = factory.Faker('building_number')
+        zipcode = factory.Faker('postcode')
+        neighbourhood = factory.Faker('current_country')
+        primary = True
+        customer = factory.SubFactory(user_factory(id= factory.Faker('pyint'),role='customer'))
+        
+    return Address_discount_Factory
+
+
+@pytest.fixture()
 def user_admin_token(user_factory):
     user_factory(role='admin')
 
@@ -86,3 +156,5 @@ def user_admin_token(user_factory):
 @pytest.fixture()
 def admin_auth_header(user_admin_token):
     return {'Authorization': f'Bearer {user_admin_token}'}
+
+

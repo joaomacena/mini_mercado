@@ -12,9 +12,9 @@ from fastapi.exceptions import HTTPException
 router = APIRouter(dependencies=[Depends(only_admin)])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model = ShowAddressSchemas)
 def create(address: AddressSchema, service: AddressService = Depends()):
-    service.create_address(address)
+    return service.create_address(address)
 
 
 @router.get("/", response_model=List[ShowAddressSchemas])
@@ -22,9 +22,9 @@ def index(repoistory: AddressRepository = Depends()):
     return repoistory.get_all()
 
 
-@router.put("/{id}")
+@router.put("/{id}", status_code = status.HTTP_200_OK, response_model = ShowAddressSchemas)
 def update(id: int, address: AddressSchema, service: AddressService = Depends()):
-    service.update_addres(id, address)
+    return service.update_addres(id, address)
 
 
 @router.get("/{id}", response_model=ShowAddressSchemas)

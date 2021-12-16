@@ -29,7 +29,7 @@ class ShowCustomerSchemas(BaseModel):
     genre: str
     document_id: str
     birth_date: date
-    user_id: int #ShowUserSchemas
+    user_id: ShowUserSchemas
 
     class Config:
         orm_mode = True

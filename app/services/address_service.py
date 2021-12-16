@@ -2,8 +2,6 @@ from fastapi import Depends
 from app.models.models import Address
 from app.repositories.address_repository import AddressRepository
 from app.api.address.schemas import AddressSchema
-from fastapi.exceptions import HTTPException
-from app.common.exceptions import CouponCodeAlreadyExistsException
 
 
 class AddressService:
@@ -22,7 +20,8 @@ class AddressService:
 
     def create_address(self, address: AddressSchema):
         self.switch_to_false_address(address)
-        self.addressRepository.create(Address(**address.dict()))
+        return self.addressRepository.create(Address(**address.dict()))
 
-    def update_addres(self, address: AddressSchema):
+    def update_addres(self, id, address: AddressSchema):
         self.switch_to_false_address(address)
+        return self.addressRepository.update(id,address.dict())

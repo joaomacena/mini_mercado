@@ -47,16 +47,18 @@ def test_user_admin_update(client:TestClient ,admin_auth_header):
                                 'role' : 'admin'
                             })
     assert response.status_code == 201
+    assert response.json()['display_name'] == 'test'
+    id_atual = response.json()['id']
     
 
-    response = client.put('/admin_user/1',
+    response = client.put(f'/admin_user/{id_atual}',
                             headers= admin_auth_header,
                             json={
-                                'display_name': 'test_novo_nome',
+                                'display_name': 'test_novo',
                                 'email': 'tetes@',
                                 'password': '123',
                                 'role' : 'admin'
                             })
     assert response.status_code == 200
-    
+
     
