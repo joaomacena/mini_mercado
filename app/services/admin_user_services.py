@@ -31,11 +31,21 @@ class Admin_userService:
         return bcrypt.hashpw(password.encode("utf8"), bcrypt.gensalt())
 
 
-    def create_admin_user(self,admin_user:Admin_UserSchemas):
-        if self.is_valid_email(None,admin_user.email):
-            admin_user.password = self.generate_password(admin_user.password)
-            return self.userRepository.create(User(**admin_user.dict()))
-            
+    def create_admin_user(self,user:User_dto):
+        if self.is_valid_email(None,user.email):
+            user.password = self.generate_password(user.password)
+            userdata = user.dict()
+            userdata.update({'role': 'admin'})
+            return self.userRepository.create(User(**userdata))
+
+    
+    def create_customer_user(self, user: User_dto):
+        if self.is_valid_email(None, user.email ):
+            user.password = self.generate_password(user.password)
+            userdata = user.dict()
+            userdata.update({'role': 'costumer'})
+            return self.userRepository.create(User(**userdata))
+
 
     def update_admin_user(self,id,admin_user:Admin_UserSchemas):
         if self.is_valid_email(id,admin_user.email):

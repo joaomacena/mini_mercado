@@ -3,6 +3,12 @@ from pydantic import BaseModel
 from app.api.user.schemas import UserSchemas_customer,ShowUserSchemas
 
 
+class UserSchema(BaseModel):
+    email: str
+    password: str
+    display_name: str
+
+
 class CustomerSchema(BaseModel):
     fist_name: str
     last_name: str
@@ -10,7 +16,11 @@ class CustomerSchema(BaseModel):
     genre: str
     document_id: str
     birth_date: date
-    user_id: UserSchemas_customer
+    user: UserSchemas_customer
+
+
+class UpdateUserSchema(UserSchema):
+    id:int
 
 
 class UpdateCustomerSchema(BaseModel):
@@ -19,7 +29,7 @@ class UpdateCustomerSchema(BaseModel):
     phone_number: str
     genre: str
     birth_date: date
-    user_id: UserSchemas_customer
+    user: UpdateUserSchema
 
 
 class ShowCustomerSchemas(BaseModel):
