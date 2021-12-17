@@ -20,3 +20,9 @@ class Admin_userAlereadyExistsEmailException(Exception):
     def __init__(self):
         self.message = 'This email is already being used'
         super().__init__(self.message)
+
+
+class AddressAlereadyExistsCustomerException(Exception):
+    def __init__(self):
+        self.message = 'This Address is not used with this cUrtomer'
+        super().__init__(self.message)

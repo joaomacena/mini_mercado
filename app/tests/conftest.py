@@ -127,20 +127,20 @@ def product_discount_factory(db_session,product_factory,payment_method_factory):
 
 
 @pytest.fixture()
-def customer_factory(db_session,user_factory):
+def customer_factory(db_session,):
     class Customer_Factory(factory.alchemy.SQLAlchemyModelFactory):
         class Meta:
             model = Customer
             sqlalchemy_session = db_session
 
-        id = factory.Faker('pyint')
+        id = factory.sequence(int)
         fist_name = factory.Faker('first_name')
         last_name = factory.Faker('last_name')
         phone_number = factory.Faker('phone_number')
         genre = factory.Faker('word')
         document_id = factory.Faker('pyint')
         birth_date = factory.Faker('date_between_dates')
-        user = factory.SubFactory(user_factory(role='customer'))
+        user_id = factory.Faker('pyint')
         
         
     return Customer_Factory

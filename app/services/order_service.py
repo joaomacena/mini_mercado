@@ -3,6 +3,7 @@ from app.models.models import Ordem_status,Order,OrderProducts
 from app.repositories.order_repository import OrderRepository, Ordem_status_Repository,OrderProducts_Repository
 from app.repositories.produc_repository import ProductRepository
 from app.services.product_discount_service import ProducDiscountService
+from app.services.address_service import AddressService
 from app.api.order.schemas import  OrderStatusSchema, OrderStatus ,OrderProducts_sum_Schema,creat_OrderProductSchema,creat_OrderSchema
 from datetime import datetime
 #from fastapi.exceptions import HTTPException
@@ -25,16 +26,18 @@ class OrderService:
                 ordem_status_Repository: Ordem_status_Repository = Depends(),
                 orderProducts_Repository: OrderProducts_Repository = Depends(),
                 productRepository:ProductRepository = Depends(),
-                producDiscountService:ProducDiscountService = Depends()):
+                producDiscountService:ProducDiscountService = Depends(),
+                addressService:AddressService = Depends()):
         self.orderRepository = orderRepository
         self.ordem_status_Repository = ordem_status_Repository
         self.orderProducts_Repository = orderProducts_Repository
         self.productRepository = productRepository
         self.producDiscountService = producDiscountService
-    
+        self.addressService = addressService    
+
     def order_number(self):
-        n_order =  '9999'
-        return n_order
+        n_order =  random.sample(range(10000000), k=1)
+        return n_order[0]
 
     
     def criar_status(self, order_id , current_status:OrderStatus):
@@ -86,7 +89,7 @@ class OrderService:
                 status = OrderStatus.ORDER_PLACED,
                 customer_id = 3,
                 created_at = datetime.now(),
-                address_id = input_order_schema.address_id,
+                address_id = self.addressService.validate_address(3,input_order_schema.address_id),
                 value = self.generate_total_value(input_order_schema.list_products),
                 payment_form_id = input_order_schema.payment_form_id,
                 total_discount = self.generate_total_desconto(input_order_schema.list_products,
@@ -97,4 +100,4 @@ class OrderService:
         self.create_order_products(order.id,input_order_schema.list_products)
     
 
-    
+     
